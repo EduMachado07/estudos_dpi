@@ -1,7 +1,6 @@
 // import thumb from "@/assets/no-image-available-.png";
 import { TipTapEditor } from "@/components/TipTap/TipTapEditor";
 import type { useGetStudyBySlugModel } from "./getStudyBySlug.model";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 
