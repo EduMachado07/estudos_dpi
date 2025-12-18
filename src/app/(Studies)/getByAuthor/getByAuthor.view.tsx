@@ -22,8 +22,8 @@ export const GetStudiesByAuthor = (props: GetStudiesViewProps) => {
         )}
 
         {status === "success" && allStudies.length === 0 && (
-          <section className="col-span-full flex flex-col items-center justify-center gap-4">
-            <p className="text-center text-xl font-body-medium text-gray-600">
+          <section className="col-span-full py-6 flex flex-col items-center justify-center gap-4">
+            <p className="text-center sm:text-xl text-lg font-body-medium text-gray-600">
               Você ainda não criou nenhum estudo.
             </p>
             <Link to="/create">

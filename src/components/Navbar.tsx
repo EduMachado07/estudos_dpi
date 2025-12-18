@@ -17,6 +17,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { BookA, ChevronRightIcon, LogOut, PanelTopClose, Pencil } from "lucide-react";
+import { LogoutPage } from "@/app/logout/page";
 
 export const Navbar = () => {
   const { author } = useStudiesStore();
@@ -75,19 +76,7 @@ export const Navbar = () => {
                     </Link>
                   </Item>
                   {/* Logout */}
-                  <Item className="" variant="destructive" size="sm" asChild>
-                    <Link to="/profile">
-                      <ItemMedia>
-                        <LogOut className="size-5" />
-                      </ItemMedia>
-                      <ItemContent>
-                        <ItemTitle>Sair da Conta</ItemTitle>
-                      </ItemContent>
-                      <ItemActions>
-                        <ChevronRightIcon className="size-4" />
-                      </ItemActions>
-                    </Link>
-                  </Item>
+                  <LogoutPage />
                 </section>
               </SheetHeader>
             </SheetContent>
