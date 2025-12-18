@@ -16,7 +16,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
-import { BookA, ChevronRightIcon, LogOut, PanelTopClose, Pencil } from "lucide-react";
+import { BookA, ChevronRightIcon, PanelTopClose, Pencil } from "lucide-react";
 import { LogoutPage } from "@/app/logout/page";
 
 export const Navbar = () => {
