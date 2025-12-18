@@ -6,13 +6,13 @@ export const SchemaCreateStudies = z.object({
     .refine((file) => file instanceof File, "Selecione uma imagem válida."),
   title: z
     .string()
-    .min(40, { message: "O título deve ter pelo menos 40 caracteres." })
+    .min(20, { message: "O título deve ter pelo menos 20 caracteres." })
     .max(100, { message: "O título deve ter no máximo 100 caracteres." })
     .trim(),
   description: z
     .string()
-    .min(100, { message: "A descrição deve ter pelo menos 100 caracteres." })
-    .max(300, { message: "A descrição deve ter no máximo 300 caracteres." })
+    .min(50, { message: "A descrição deve ter pelo menos 50 caracteres." })
+    .max(300, { message: "A descrição deve ter no máximo 200 caracteres." })
     .trim(),
   body: z
     .string()

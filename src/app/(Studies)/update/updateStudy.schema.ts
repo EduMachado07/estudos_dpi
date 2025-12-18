@@ -7,14 +7,14 @@ export const SchemaUpdateStudy = z.object({
     .optional(),
   title: z
     .string()
-    .min(40, { message: "O título deve ter pelo menos 40 caracteres." })
+    .min(20, { message: "O título deve ter pelo menos 20 caracteres." })
     .max(100, { message: "O título deve ter no máximo 100 caracteres." })
     .trim()
     .optional(),
   description: z
     .string()
-    .min(100, { message: "A descrição deve ter pelo menos 100 caracteres." })
-    .max(300, { message: "A descrição deve ter no máximo 300 caracteres." })
+    .min(50, { message: "A descrição deve ter pelo menos 50 caracteres." })
+    .max(200, { message: "A descrição deve ter no máximo 200 caracteres." })
     .trim()
     .optional(),
   body: z
