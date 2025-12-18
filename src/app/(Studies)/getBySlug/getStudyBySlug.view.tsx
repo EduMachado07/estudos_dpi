@@ -29,11 +29,11 @@ export const GetStudyBySlugView = (props: GetStudyBySlugViewProps) => {
           </div>
 
           <div className="flex-1 flex flex-col gap-2">
-            <h1 className="font-title text-3xl md:text-4xl text-pretty">
+            <h1 className="font-title text-2xl md:text-4xl text-pretty">
               {study?.title}
             </h1>
 
-            <p className="text-gray-600 font-body text-lg md:text-xl leading-normal text-justify text-pretty">
+            <p className="text-gray-600 font-body text-base md:text-xl leading-normal text-justify text-pretty">
               {study?.description}
             </p>
 
@@ -43,7 +43,7 @@ export const GetStudyBySlugView = (props: GetStudyBySlugViewProps) => {
             </p>
           </div>
         </section>
-        <h1 className="border-l-4 border-blue-500 text-zinc-700 pl-3 py-1 w-full text-left font-body text-lg md:text-xl">
+        <h1 className="border-l-4 border-blue-500 text-zinc-700 pl-3 py-1 w-full text-left font-body text-lg md:text-xl capitalize">
           Escrito por{" "}
           <span className="font-body-medium text-blue-700">
             {study?.author.name}
@@ -58,7 +58,7 @@ export const GetStudyBySlugView = (props: GetStudyBySlugViewProps) => {
             />
           )}
         </section>
-        <Separator />
+        {/* <Separator /> */}
 
         <section className="w-full flex justify-between items-center">
           <p
