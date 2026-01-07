@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { SchemaLoginUser, type SchemaLoginUserType } from "./login.schema";
 import { AxiosError } from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { ILoginUserService } from "@/service/IAuthService";
@@ -30,8 +30,9 @@ export const useLoginModel = ({ loginUserService }: LoginModelProps) => {
   const [apiError, setApiError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { setAuthor } = useStudiesStore();
+  const queryClient = useQueryClient();
 
-  const { mutate } = useMutation<
+  const { mutate, status } = useMutation<
     LoginResponse,
     AxiosError<{ message: string; status: string }>,
     SchemaLoginUserType
@@ -64,6 +65,7 @@ export const useLoginModel = ({ loginUserService }: LoginModelProps) => {
 
   const onSubmit = (data: SchemaLoginUserType) => {
     // console.log(data)
+    queryClient.invalidateQueries({ queryKey: ["studiesAuthor"] });
     setApiError(null);
     mutate(data);
   };
@@ -72,5 +74,6 @@ export const useLoginModel = ({ loginUserService }: LoginModelProps) => {
     form,
     onSubmit,
     apiError,
+    status
   };
 };

@@ -29,7 +29,7 @@ export const GetStudyBySlugView = (props: GetStudyBySlugViewProps) => {
               </div>
 
               <div className="flex-1 flex flex-col gap-2">
-                <h1 className="font-title text-2xl md:text-4xl text-pretty">
+                <h1 className="font-title text-2xl md:text-4xl">
                   {study?.title}
                 </h1>
 

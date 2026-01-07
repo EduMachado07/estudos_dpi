@@ -147,6 +147,23 @@ export const useUpdateStudyModel = ({
     mutate(payload);
   };
 
+  // COPIAR LINK DO ESTUDO
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = async (slug: string) => {
+  try {
+    const publicUrl = `${window.location.origin}/study/${slug}`;
+
+    await navigator.clipboard.writeText(publicUrl);
+    setCopied(true);
+
+    setTimeout(() => setCopied(false), 2000);
+  } catch (err) {
+    console.error("Erro ao copiar link:", err);
+  }
+};
+
+
   return {
     form,
     data: study,
@@ -157,5 +174,7 @@ export const useUpdateStudyModel = ({
     setPreview,
     getStatus,
     refetch,
+    copied,
+    handleCopyLink
   };
 };

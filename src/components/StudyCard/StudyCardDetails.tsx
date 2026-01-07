@@ -67,13 +67,13 @@ export const StudyCardDetails = ({
     bg: "bg-gray-50",
   };
   return (
-    <section className="h-63 p-4 flex flex-col justify-between bg-[#fafafa]">
+    <section className="h-50 p-4 flex flex-col justify-between bg-[#fafafa]">
       <div className="flex flex-col lg:gap-2 gap-1">
         <h1 className="capitalize font-title sm:text-xl text-lg line-clamp-2">{title}</h1>
-        <p className="font-body line-clamp-4 text-justify text-balance">{description}</p>
+        <p className="font-body line-clamp-3 text-pretty">{description}</p>
       </div>
       <>
-        <hr />
+        {/* <hr /> */}
         <div className="flex justify-between mt-1.5">
           <p
             className={`font-body-medium text-sm py-1 px-2 h-fit rounded-sm ${styles.border} ${styles.text} ${styles.bg}`}

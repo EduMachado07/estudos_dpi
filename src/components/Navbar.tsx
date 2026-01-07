@@ -25,7 +25,13 @@ export const Navbar = () => {
   return (
     <header className="flex items-center justify-between pt-4">
       <section className="flex gap-10 items-center">
-        <NavLink to="/" className="font-title md:text-2xl text-xl">
+        <NavLink
+          to="/"
+          className="font-title md:text-xl text-lg flex items-center gap-0"
+        >
+          <div className="w-14 h-14">
+            <img src="/logo_dpi.png" alt="Logo DPI" className="w-full object-cover" />
+          </div>
           Estudos DPI
         </NavLink>
       </section>

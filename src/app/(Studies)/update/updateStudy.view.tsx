@@ -10,7 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { useUpdateStudyModel } from "./updateStudy.model";
-import { CloudUpload, CloudOff, AlertTriangle, ArrowLeft } from "lucide-react";
+import {
+  CloudUpload,
+  CloudOff,
+  AlertTriangle,
+  ArrowLeft,
+  Copy,
+} from "lucide-react";
 import { TipTapEditor } from "@/components/TipTap/TipTapEditor";
 import {
   Select,
@@ -34,6 +40,8 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
     inputRef,
     preview,
     setPreview,
+    copied,
+    handleCopyLink,
   } = props;
 
   return (
@@ -202,7 +210,7 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
                     <FormControl>
                       <Textarea
                         className="max-h-20"
-                        maxLength={300}
+                        maxLength={200}
                         placeholder="Descrição breve do estudo"
                         {...field}
                       />
@@ -223,7 +231,9 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
                       <TipTapEditor
                         key={data?.id}
                         content={form.watch("body") || ""}
-                        onChange={(html) => form.setValue("body", html, { shouldDirty: true })}
+                        onChange={(html) =>
+                          form.setValue("body", html, { shouldDirty: true })
+                        }
                         placeholder="Escreva o conteúdo do estudo aqui..."
                       />
                     </FormControl>
@@ -245,7 +255,7 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
                         value={field.value ?? ""} // garante string
                         onValueChange={(v) => field.onChange(v)}
                       >
-                        <SelectTrigger className="md:w-[200px] w-full">
+                        <SelectTrigger className="md:w-50 w-full">
                           <SelectValue placeholder="Identificador" />
                         </SelectTrigger>
                         <SelectContent>
@@ -264,17 +274,23 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
                 )}
               />
 
-              <section className="w-full flex max-md:flex-col gap-2 justify-end">
-                <DeleteStudyPage id={data?.id || ""} />
-
-                <Button
-                  size={"lg"}
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="md:px-12 max-md:w-full"
-                >
-                  Atualizar estudo
+              <section className="w-full flex max-md:flex-col gap-2 justify-between items-center">
+                <Button variant="outline" onClick={() => handleCopyLink(data.slug)}>
+                  <Copy /> {copied ? "Copiado!" : "Copiar link"}
                 </Button>
+
+                <div className="flex gap-2">
+                  <DeleteStudyPage id={data?.id || ""} />
+
+                  <Button
+                    size={"lg"}
+                    type="submit"
+                    disabled={status === "loading"}
+                    className="md:px-12 max-md:w-full"
+                  >
+                    Atualizar estudo
+                  </Button>
+                </div>
               </section>
             </form>
 
