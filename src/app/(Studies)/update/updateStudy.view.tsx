@@ -198,7 +198,7 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
                           className={`${
                             previewVideo
                               ? "h-65 sm:w-1/2 w-full"
-                              : "h-40 sm:w-1/5 w-full"
+                              : "h-40 sm:w-2/6 w-full"
                           } flex justify-center items-center`}
                         >
                           {previewVideo ? (
@@ -226,7 +226,7 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
                             Duração ideal: <strong>3–5 minutos</strong>
                           </p>
 
-                          <section className="w-full flex justify-end gap-2 mt-1">
+                          <section className="w-full flex sm:justify-start justify-end gap-2 mt-1">
                             <Button
                               type="button"
                               size="sm"

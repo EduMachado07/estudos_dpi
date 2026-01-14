@@ -59,7 +59,7 @@ export const CreateStudiesView = (props: CreateStudiesViewProps) => {
                         onClick={() => inputImageRef.current?.click()}
                         className="p-4 shadow-2xs flex max-sm:flex-col justify-left gap-4 items-start sm:items-center w-full border-[#b9b9b9] border-2 object-cover rounded-md"
                       >
-                        <div className="w-full h-full sm:w-2/6 sm:h-full flex justify-center items-center">
+                        <div className={`w-full h-45 sm:w-2/6 sm:h-full flex justify-center items-center`}>
                           {previewImage ? (
                             <img
                               src={previewImage}
@@ -129,7 +129,7 @@ export const CreateStudiesView = (props: CreateStudiesViewProps) => {
                       >
                         <div
                           className={`${
-                            previewVideo ? "h-65 sm:w-1/2 w-full" : "h-40 sm:w-1/5 w-full"
+                            previewVideo ? "h-65 sm:w-1/2 w-full" : "h-40 sm:w-2/6 w-full"
                           } flex justify-center items-center`}
                         >
                           {previewVideo ? (
@@ -155,7 +155,7 @@ export const CreateStudiesView = (props: CreateStudiesViewProps) => {
                           <p className="font-body text-sm text-muted-foreground">
                             Duração ideal: <strong>3-5 minutos máximo</strong>
                           </p>
-                          <section className="w-full flex justify-end gap-2 mt-1">
+                          <section className="w-full flex sm:justify-start justify-end gap-2 mt-1">
                             <Button
                               type="button"
                               size="default"
