@@ -6,6 +6,7 @@ export interface IStudies {
   description: string;
   // thumbnailId: string;
   thumbnailUrl: string;
+  videoUrl: string;
   body: string;
   author: {
     name: string

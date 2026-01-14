@@ -4,14 +4,14 @@ import type { AxiosRequestConfig } from "axios";
 // ✅ Instância base SEM interceptadores
 export const AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 10000,
+  timeout: 30000,
   withCredentials: true,
 });
 
 // ✅ Instância principal (usada no app)
 export const AxiosInstanceWithRefreshToken = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 10000,
+  timeout: 30000,
   withCredentials: true,
 });
 

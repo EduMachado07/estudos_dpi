@@ -16,6 +16,8 @@ import {
   AlertTriangle,
   ArrowLeft,
   Copy,
+  SquarePlay,
+  ImageUp,
 } from "lucide-react";
 import { TipTapEditor } from "@/components/TipTap/TipTapEditor";
 import {
@@ -35,11 +37,14 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
     form,
     data,
     refetch,
-    getStatus,
+    status,
     onSubmit,
-    inputRef,
-    preview,
-    setPreview,
+    inputImageRef,
+    previewImage,
+    setPreviewImage,
+    inputVideoRef,
+    previewVideo,
+    setPreviewVideo,
     copied,
     handleCopyLink,
   } = props;
@@ -47,7 +52,7 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
   return (
     <main>
       {/* Estado: carregando */}
-      {getStatus === "pending" && (
+      {status === "pending" && (
         <div className="py-10 flex flex-col items-center gap-4">
           <div className="">
             <CloudUpload className="size-10 text-blue-600" />
@@ -57,7 +62,7 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
       )}
 
       {/* Estado: erro */}
-      {getStatus === "error" && (
+      {status === "error" && (
         <div className="py-10 flex flex-col items-center gap-4 text-center">
           <CloudOff className="size-14 text-red-500" />
           <h1 className="text-2xl font-bold text-red-600">
@@ -79,7 +84,7 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
       )}
 
       {/* Estado: estudo não encontrado */}
-      {getStatus === "success" && !data && (
+      {status === "success" && !data && (
         <div className="py-10 flex flex-col items-center gap-4 text-center">
           <AlertTriangle className="size-14 text-gray-500" />
           <h1 className="text-2xl font-bold text-gray-700">
@@ -100,13 +105,15 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
       )}
 
       <section className="bg-[#efefef] lg:px-[12vw] w-full flex-1 flex justify-center items-center">
-        {/* Estado: sucesso (formulário) */}
-        {getStatus === "success" && data && (
+        {status === "success" && data && (
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="w-full flex flex-col gap-6"
             >
+              <h1 className="text-2xl font-title text-blue-600">
+                Atualize o estudo
+              </h1>
               {/* Thumbnail */}
               <FormField
                 control={form.control}
@@ -115,29 +122,26 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
                   <FormItem>
                     <FormLabel>Thumbnail</FormLabel>
                     <FormControl>
-                      <div>
-                        {preview ? (
-                          <div className="flex flex-col gap-2 md:gap-4 p-2 md:p-6 items-end shadow-sm relative border border-[#b9b9b9] rounded-md overflow-hidden">
-                            <img
-                              src={preview}
-                              alt="Preview"
-                              className="shadow-lg md:h-110 h-50 w-full object-cover rounded-md"
-                            />
-                            <Button
-                              type="button"
-                              onClick={() => inputRef.current?.click()}
-                              size="sm"
-                              variant={"ghost"}
-                            >
-                              Alterar imagem
-                            </Button>
+                      <section>
+                        {/* Preview da imagem */}
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => inputImageRef.current?.click()}
+                          className="p-4 flex shadow-2xs max-sm:flex-col justify-left gap-4 items-start sm:items-center w-full border-[#b9b9b9] border-2 object-cover rounded-md"
+                        >
+                          <div className="w-full h-full sm:w-2/6 sm:h-full flex justify-center items-center">
+                            {previewImage ? (
+                              <img
+                                src={previewImage}
+                                alt="Preview"
+                                className="shadow-lg w-full h-full object-cover rounded-md"
+                              />
+                            ) : (
+                              <ImageUp className="size-18 sm:size-18 stroke-blue-600" />
+                            )}
                           </div>
-                        ) : (
-                          <div className="shadow-2xs flex flex-col justify-center gap-1.5 items-center h-120 w-full border-[#b9b9b9] border-2 border-dashed object-cover rounded-md">
-                            <CloudUpload className="size-18 stroke-blue-600" />
-                            <h1 className="font-title capitalize text-lg">
-                              imagem do estudo
-                            </h1>
+                          <div className="max-sm:w-full flex flex-col items-start gap-1">
                             <p className="font-body text-sm text-muted-foreground">
                               Tamanho máximo: <strong>5MB</strong>
                             </p>
@@ -151,26 +155,118 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
                             </p>
                             <Button
                               type="button"
-                              onClick={() => inputRef.current?.click()}
+                              // onClick={() => inputRef.current?.click()}
                               size="default"
                               variant={"default"}
-                              className="mt-2"
+                              className="mt-1 max-sm:self-end"
                             >
-                              Selecionar imagem
+                              Escolher imagem
                             </Button>
                           </div>
-                        )}
-
+                        </div>
                         <Input
                           type="file"
                           accept="image/png, image/jpeg, image/webp, image/avif, image/svg+xml"
-                          ref={inputRef}
+                          ref={inputImageRef}
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              field.onChange(file); // salva no react-hook-form
+                              setPreviewImage(URL.createObjectURL(file)); // gera preview
+                            }
+                          }}
+                        />
+                      </section>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* video */}
+              <FormField
+                control={form.control}
+                name="video"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vídeo</FormLabel>
+                    <FormControl>
+                      <div className="p-4 shadow-2xs flex max-sm:flex-col justify-left gap-6 sm:items-center items-start w-full border-[#b9b9b9] border-2 rounded-md">
+                        {/* Preview */}
+                        <div
+                          className={`${
+                            previewVideo
+                              ? "h-65 sm:w-1/2 w-full"
+                              : "h-40 sm:w-1/5 w-full"
+                          } flex justify-center items-center`}
+                        >
+                          {previewVideo ? (
+                            <video
+                              src={previewVideo}
+                              controls
+                              className="shadow-lg w-full h-full object-cover rounded-md"
+                            />
+                          ) : (
+                            <SquarePlay className="size-18 stroke-blue-600" />
+                          )}
+                        </div>
+
+                        <div className="max-sm:w-full flex flex-col items-start gap-1">
+                          <p className="font-body text-sm text-muted-foreground">
+                            Tamanho máximo: <strong>30MB</strong>
+                          </p>
+                          <p className="font-body text-sm text-muted-foreground">
+                            Formatos aceitos: <strong>MP4</strong>
+                          </p>
+                          <p className="font-body text-sm text-muted-foreground">
+                            Recomendado: <strong>720p (1280×720)</strong>
+                          </p>
+                          <p className="font-body text-sm text-muted-foreground">
+                            Duração ideal: <strong>3–5 minutos</strong>
+                          </p>
+
+                          <section className="w-full flex justify-end gap-2 mt-1">
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={() => inputVideoRef.current?.click()}
+                            >
+                              Escolher vídeo
+                            </Button>
+
+                            {previewVideo && (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setPreviewVideo(null);
+
+                                  field.onChange(null);
+
+                                  if (inputVideoRef.current) {
+                                    inputVideoRef.current.value = "";
+                                  }
+                                }}
+                              >
+                                Remover vídeo
+                              </Button>
+                            )}
+                          </section>
+                        </div>
+
+                        {/* Input escondido */}
+                        <Input
+                          type="file"
+                          accept="video/mp4"
+                          ref={inputVideoRef}
                           className="hidden"
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
                               field.onChange(file);
-                              setPreview(URL.createObjectURL(file));
+                              setPreviewVideo(URL.createObjectURL(file));
                             }
                           }}
                         />
@@ -275,18 +371,23 @@ export const UpdateStudyView = (props: UpdateStudyViewProps) => {
               />
 
               <section className="w-full flex max-md:flex-col gap-2 justify-between items-center">
-                <Button variant="outline" onClick={() => handleCopyLink(data.slug)}>
+                <Button
+                  size={"default"}
+                  variant="outline"
+                  onClick={() => handleCopyLink(data.slug)}
+                  className="max-sm:self-start max-sm:mb-2"
+                >
                   <Copy /> {copied ? "Copiado!" : "Copiar link"}
                 </Button>
 
-                <div className="flex gap-2">
+                <div className="max-sm:w-full flex max-sm:items-end max-md:flex-col gap-2">
                   <DeleteStudyPage id={data?.id || ""} />
 
                   <Button
                     size={"lg"}
                     type="submit"
-                    disabled={status === "loading"}
-                    className="md:px-12 max-md:w-full"
+                    disabled={props.status === "pending"}
+                    className="md:px-12 max-sm:w-full"
                   >
                     Atualizar estudo
                   </Button>

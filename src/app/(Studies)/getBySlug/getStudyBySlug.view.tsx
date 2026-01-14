@@ -12,7 +12,9 @@ export const GetStudyBySlugView = (props: GetStudyBySlugViewProps) => {
   return (
     <>
       <main className="flex flex-col items-center md:gap-10 gap-4 xl:px-[8vw]">
-        {status === "pending" && <p className="mt-12 uppercase font-body text-lg">Carregando...</p>}
+        {status === "pending" && (
+          <p className="mt-12 uppercase font-body text-lg">Carregando...</p>
+        )}
 
         {status === "error" && <p>Erro ao carregar o estudo.</p>}
 
@@ -20,7 +22,7 @@ export const GetStudyBySlugView = (props: GetStudyBySlugViewProps) => {
           <>
             <section className="w-full flex max-lg:flex-col gap-4 md:gap-8 items-start">
               {/* thumbnail */}
-              <div className="lg:w-2/6 w-full lg:h-64 h-80 overflow-hidden rounded-sm shadow-md">
+              <div className="md:w-2/6 w-full md:h-64 h-50 overflow-hidden rounded-sm shadow-md">
                 <img
                   src={study?.thumbnailUrl}
                   alt="Imagem do estudo"
@@ -41,15 +43,24 @@ export const GetStudyBySlugView = (props: GetStudyBySlugViewProps) => {
                   {formatDate(study?.updatedAt)} • Tempo de leitura:{" "}
                   {study?.readingTime} min
                 </p>
+                <h1 className="border-l-4 border-blue-500 text-zinc-700 pl-3 py-1 w-full text-left font-body text-lg md:text-xl capitalize">
+                  Escrito por{" "}
+                  <span className="font-body-medium text-blue-700">
+                    {study?.author.name}
+                  </span>
+                </h1>
               </div>
             </section>
-            <h1 className="border-l-4 border-blue-500 text-zinc-700 pl-3 py-1 w-full text-left font-body text-lg md:text-xl capitalize">
-              Escrito por{" "}
-              <span className="font-body-medium text-blue-700">
-                {study?.author.name}
-              </span>
-            </h1>
-            <section className="lg:w-[95%] w-full">
+
+            {/* VIDEO */}
+            {study?.videoUrl && (
+              <video
+                src={study?.videoUrl}
+                controls
+                className="sm:w-4/5 w-full sm:max-h-120 rounded-lg shadow-md"
+              />
+            )}
+            <section className="w-full">
               {study?.body && (
                 <TipTapEditor
                   key={study.body}

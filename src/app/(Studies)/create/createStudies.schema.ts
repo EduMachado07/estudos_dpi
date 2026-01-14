@@ -4,6 +4,10 @@ export const SchemaCreateStudies = z.object({
   thumbnail: z
     .any()
     .refine((file) => file instanceof File, "Selecione uma imagem válida."),
+    video: z
+    .any()
+    .refine((file) => file instanceof File, "Selecione um vídeo válido.")
+    .optional(),
   title: z
     .string()
     .min(20, { message: "O título deve ter pelo menos 20 caracteres." })

@@ -18,7 +18,7 @@ export const DeleteStudyView = (props: DeleteStudyViewProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size={"lg"}>
+        <Button variant="outline" size={"lg"} className="max-sm:w-full">
           Excluir Estudo
         </Button>
       </DialogTrigger>

@@ -19,6 +19,9 @@ type UpdateStudyModelProps = {
   updateStudyService: IUpdateStudyService;
 };
 
+const MAX_VIDEO_SIZE_MB = 30;
+const MAX_THUMBNAIL_SIZE_MB = 5;
+
 export const useUpdateStudyModel = ({
   getStudyBySlugService,
   updateStudyService,
@@ -27,10 +30,12 @@ export const useUpdateStudyModel = ({
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const inputRef = useRef<HTMLInputElement>(null);
   const originalStudyRef = useRef<SchemaUpdateStudyType | null>(null);
-
-  const [preview, setPreview] = useState<string | null>(null);
+  const inputImageRef = useRef<HTMLInputElement>(null);
+  const inputVideoRef = useRef<HTMLInputElement>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewVideo, setPreviewVideo] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const form = useForm<SchemaUpdateStudyType>({
     resolver: zodResolver(SchemaUpdateStudy),
@@ -76,7 +81,10 @@ export const useUpdateStudyModel = ({
     originalStudyRef.current = initialValues;
 
     if (study.thumbnailUrl) {
-      setPreview(study.thumbnailUrl);
+      setPreviewImage(study.thumbnailUrl);
+    }
+    if (study.videoUrl) {
+      setPreviewVideo(study.videoUrl);
     }
   }, [study, form]);
 
@@ -95,6 +103,7 @@ export const useUpdateStudyModel = ({
     },
 
     onError: (error) => {
+      console.log(error);
       toast.error(
         error.response?.data?.message ?? "Erro ao atualizar estudo.",
         { id: "update-study" }
@@ -103,8 +112,8 @@ export const useUpdateStudyModel = ({
 
     onSuccess: (updatedStudy) => {
       queryClient.setQueryData(["study", updatedStudy.id], updatedStudy);
-      // queryClient.invalidateQueries({ queryKey: ["study-by-slug"] });
       queryClient.invalidateQueries({ queryKey: ["studiesAuthor"] });
+      queryClient.invalidateQueries({ queryKey: ["study-by-slug"] });
 
       toast.success("Estudo atualizado com sucesso!", {
         id: "update-study",
@@ -120,7 +129,12 @@ export const useUpdateStudyModel = ({
     },
   });
 
-  const onSubmit = (formData: SchemaUpdateStudyType & { thumbnail?: File }) => {
+  const onSubmit = (
+    data: SchemaUpdateStudyType & {
+      thumbnail?: File;
+      video?: File | null;
+    }
+  ) => {
     if (!originalStudyRef.current) return;
 
     const original = originalStudyRef.current;
@@ -128,14 +142,44 @@ export const useUpdateStudyModel = ({
     let hasChanges = false;
 
     (["title", "description", "body", "tag"] as const).forEach((field) => {
-      if (formData[field] !== original[field]) {
-        payload.append(field, formData[field] ?? "");
+      if (data[field] !== original[field]) {
+        payload.append(field, data[field] ?? "");
         hasChanges = true;
       }
     });
 
-    if (formData.thumbnail) {
-      payload.append("thumbnail", formData.thumbnail);
+    // VALIDAÇÕES DE ARQUIVOS
+    // Thumbnail
+    if (data.thumbnail) {
+      const maxThumbSize = MAX_THUMBNAIL_SIZE_MB * 1024 * 1024;
+
+      if (data.thumbnail.size > maxThumbSize) {
+        toast.error(
+          `A thumbnail deve ter no máximo ${MAX_THUMBNAIL_SIZE_MB}MB`
+        );
+        return;
+      }
+
+      payload.append("thumbnail", data.thumbnail);
+      hasChanges = true;
+    }
+
+    // Vídeo
+    if (data.video instanceof File) {
+      const maxVideoSize = MAX_VIDEO_SIZE_MB * 1024 * 1024;
+
+      if (data.video.size > maxVideoSize) {
+        toast.error(`O vídeo deve ter no máximo ${MAX_VIDEO_SIZE_MB}MB`);
+        return;
+      }
+
+      payload.append("video", data.video);
+      hasChanges = true;
+    }
+
+    // remoção explícita de vídeo
+    if (data.video === null && study?.videoUrl) {
+      payload.append("removeVideo", "true");
       hasChanges = true;
     }
 
@@ -147,34 +191,32 @@ export const useUpdateStudyModel = ({
     mutate(payload);
   };
 
-  // COPIAR LINK DO ESTUDO
-  const [copied, setCopied] = useState(false);
-
+  // FUNÇÃO PARA COPIAR LINK DO ESTUDO
   const handleCopyLink = async (slug: string) => {
-  try {
-    const publicUrl = `${window.location.origin}/study/${slug}`;
+    try {
+      const publicUrl = `${window.location.origin}/study/${slug}`;
+      await navigator.clipboard.writeText(publicUrl);
 
-    await navigator.clipboard.writeText(publicUrl);
-    setCopied(true);
-
-    setTimeout(() => setCopied(false), 2000);
-  } catch (err) {
-    console.error("Erro ao copiar link:", err);
-  }
-};
-
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Erro ao copiar link:", err);
+    }
+  };
 
   return {
     form,
     data: study,
-    status,
+    status: getStatus,
     onSubmit,
-    inputRef,
-    preview,
-    setPreview,
-    getStatus,
+    inputImageRef,
+    previewImage,
+    setPreviewImage,
+    inputVideoRef,
+    previewVideo,
+    setPreviewVideo,
     refetch,
     copied,
-    handleCopyLink
+    handleCopyLink,
   };
 };

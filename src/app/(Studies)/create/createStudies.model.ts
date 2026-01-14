@@ -14,9 +14,14 @@ type CreateStudyModelProps = {
   createStudyService: ICreateStudyService;
 };
 
+const MAX_VIDEO_SIZE_MB = 30;
+const MAX_THUMBNAIL_SIZE_MB = 5;
+
 export const useCreateStudiesModel = ({
   createStudyService,
 }: CreateStudyModelProps) => {
+  const navigate = useNavigate();
+
   const form = useForm<SchemaCreateStudiesType>({
     resolver: zodResolver(SchemaCreateStudies),
     defaultValues: {
@@ -26,11 +31,10 @@ export const useCreateStudiesModel = ({
       tag: "",
     },
   });
-  const navigate = useNavigate();
 
   const { mutate } = useMutation<
     void,
-    AxiosError<{ message: string; details: string }>,
+    AxiosError<{ message: string }>,
     FormData
   >({
     mutationFn: async (formData) => {
@@ -41,18 +45,6 @@ export const useCreateStudiesModel = ({
       toast.loading("Criando estudo...", { id: "create-study" });
     },
 
-    onError: (error) => {
-      if (error.response) {
-        toast.error("Erro ao criar estudo: " + error.response.data.message, {
-          id: "create-study",
-        });
-      } else {
-        toast.error("Erro ao criar estudo. Tente novamente.", {
-          id: "create-study",
-        });
-      }
-    },
-
     onSuccess: () => {
       toast.success("Estudo criado com sucesso!", {
         id: "create-study",
@@ -60,21 +52,64 @@ export const useCreateStudiesModel = ({
         onAutoClose: () => navigate("/profile"),
       });
     },
+
+    onError: (error) => {
+      const message =
+        error.response?.data?.message ??
+        "Erro ao criar estudo. Tente novamente.";
+
+      toast.error(message, { id: "create-study" });
+    },
   });
 
-  const onSubmit = (data: SchemaCreateStudiesType & { thumbnail: File }) => {
-    const study = new FormData();
-    study.append("thumbnail", data.thumbnail);
-    study.append("title", data.title);
-    study.append("description", data.description);
-    study.append("body", data.body);
-    study.append("tag", data.tag);
+  const onSubmit = (
+    data: SchemaCreateStudiesType & {
+      video?: File;
+      thumbnail?: File;
+    }
+  ) => {
+    // VALIDAÇÃO DE TAMANHO DOS ARQUIVOS
+    // VIDEO
+    if (data.video) {
+      const maxVideoSize = MAX_VIDEO_SIZE_MB * 1024 * 1024;
+      
+      if (data.video.size > maxVideoSize) {
+        toast.error(`O vídeo deve ter no máximo ${MAX_VIDEO_SIZE_MB}MB`);
+        return;
+      }
+    }
+    // THUMBNAIL
+    if (data.thumbnail) {
+      const maxThumbSize = MAX_THUMBNAIL_SIZE_MB * 1024 * 1024;
 
-    mutate(study);
+      if (data.thumbnail.size > maxThumbSize) {
+        toast.error(
+          `A thumbnail deve ter no máximo ${MAX_THUMBNAIL_SIZE_MB}MB`
+        );
+        return;
+      }
+    }
+
+    const formData = new FormData();
+
+    if (data.thumbnail) {
+      formData.append("thumbnail", data.thumbnail);
+    }
+
+    if (data.video) {
+      formData.append("video", data.video);
+    }
+
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("body", data.body);
+    formData.append("tag", data.tag);
+
+    mutate(formData);
   };
 
   return {
-    onSubmit,
     form,
+    onSubmit,
   };
 };
