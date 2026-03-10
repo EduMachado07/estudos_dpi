@@ -67,25 +67,24 @@ export const StudyCardDetails = ({
     bg: "bg-gray-50",
   };
   return (
-    <section className="h-50 p-4 flex flex-col justify-between bg-[#fafafa]">
-      <div className="flex flex-col lg:gap-2 gap-1">
-        <h1 className="capitalize font-title sm:text-xl text-lg line-clamp-2">{title}</h1>
+    <section className="h-55 p-4 flex flex-col justify-between bg-[#fafafa]">
+      <div className="flex flex-col lg:gap-2">
+        <h1 className="capitalize font-title sm:text-xl text-lg line-clamp-2">
+          {title}
+        </h1>
         <p className="font-body line-clamp-3 text-pretty">{description}</p>
       </div>
-      <>
-        {/* <hr /> */}
-        <div className="flex justify-between mt-1.5">
-          <p
-            className={`font-body-medium text-sm py-1 px-2 h-fit rounded-sm ${styles.border} ${styles.text} ${styles.bg}`}
-          >
-            {tag}
-          </p>
-          <div className="flex flex-col gap-2">
-            <h3 className="font-title text-base self-end">{author}</h3>
-            <p className="self-end font-body -mt-1">{formatDate(createdAt)}</p>
-          </div>
+      <div className="flex justify-between items-end">
+        <p
+          className={`font-body-medium text-sm py-1 px-2 h-fit rounded-sm ${styles.border} ${styles.text} ${styles.bg}`}
+        >
+          {tag}
+        </p>
+        <div className="flex flex-col">
+          <p className="self-end font-body">{formatDate(createdAt)}</p>
+          <h3 className="font-body-medium self-end">{author}</h3>
         </div>
-      </>
+      </div>
     </section>
   );
 };

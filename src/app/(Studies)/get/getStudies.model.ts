@@ -30,7 +30,7 @@ export const useGetStudiesModel = ({
 
     const res = await getAllStudiesService.exec(
       pageParam.offset,
-      pageParam.limit
+      pageParam.limit,
     );
 
     return {
@@ -43,13 +43,22 @@ export const useGetStudiesModel = ({
     };
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, refetch } =
-    useInfiniteQuery({
-      queryKey: ["studies"],
-      queryFn: ({ pageParam }) => fetchStudies({ pageParam }),
-      initialPageParam: { offset: 0, limit: 12 },
-      getNextPageParam: (lastPage) => lastPage.next || undefined,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ["studies"],
+    queryFn: ({ pageParam }) => fetchStudies({ pageParam }),
+    initialPageParam: { offset: 0, limit: 12 },
+    getNextPageParam: (lastPage) => lastPage.next || undefined,
+
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
+  });
 
   const allStudies: IStudies[] = data?.pages.flatMap((page) => page.data) ?? [];
 

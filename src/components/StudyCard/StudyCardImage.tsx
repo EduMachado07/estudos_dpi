@@ -6,7 +6,7 @@ interface IStudyCardImageProps {
 
 export const StudyCardImage = ({ image }: IStudyCardImageProps) => {
   return (
-    <section className="h-50 w-full border-b-1">
+    <section className="h-45 w-full border-b-1">
       {image === "thumbnailUrl" ? (
         <div className="bg-zinc-300 h-full flex items-center justify-center">
           <span className="text-zinc-500">Thumbnail</span>
