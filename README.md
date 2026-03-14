@@ -89,7 +89,7 @@ Foi adotado um sistema de componentes reutilizáveis utilizando shadcn/ui, garan
 
 ## Sistema de Refresh Token
 
-![Preview-Screens]()
+![Preview-Screens](https://github.com/EduMachado07/estudos_dpi/blob/main/public/diagram_tokenRefresh.png)
 
 Para garantir maior segurança e melhor experiência de autenticação, 
 o sistema utiliza um modelo de autenticação baseado em Access Token e Refresh Token.
