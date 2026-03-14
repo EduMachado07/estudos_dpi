@@ -1,6 +1,6 @@
 # Estudos Dom Pedro I
 
-![Preview-Screens]()
+![Preview-Screens](https://github.com/EduMachado07/estudos_dpi/blob/main/public/screenshots_dpi.png)
 
 Ideia do projeto:
 
@@ -43,7 +43,7 @@ _**Como posso facilitar a criação de estudos?**_
 A interface foi projetada para permitir que o usuário crie novos estudos de forma rápida, 
 com campos claros e bem definidos, evitando complexidade desnecessária.
 
-Para isso foi também implementado uma funcionalidade de edição do corpo do estudo com inteligência artificial.
+Para isso foi também implementado uma funcionalidade de formatação de texto com inteligência artificial.
 
 _**Como posso facilitar a leitura e revisão de estudos?**_
 
@@ -60,15 +60,36 @@ Foi adotado um sistema de componentes reutilizáveis utilizando shadcn/ui, garan
 
 ## Funcionalidades
 
-### **Autenticação de usuário**
-### **Criação de novos estudos bíblicos**
-### **Edição e exclusão de estudos existentes**
-### **Visualização detalhada dos estudos**
-### **Edição de texto com inteligência artificial**
-### **Upload de imagens para estudos**
-### **Interface responsiva para qualquer dispositivo**
+- Visualizar estudos bíblicos em uma página dedicada com informações completas. Cada estudo apresenta:
+  - título
+  - descrição
+  - imagem ilustrativa
+  - tempo estimado de leitura
+  - texto principal
+  - vídeo complementar (opcional)
+  - categoria do estudo
+  - nome do autor
+  - data de criação
+- Buscar estudos pelo título.
+- Filtrar estudos por categoria.
+- Listar estudos em ordem cronológica.
+- Autores autorizados podem:
+  - Criar novos estudos bíblicos
+  - Atualizar qualquer informação do estudo
+  - Excluir estudos existentes
+- O sistema oferece suporte de inteligência artificial para auxiliar autores na formatação e melhoria do texto principal do estudo.
+- A interface da aplicação é totalmente responsiva, adaptando-se automaticamente a diferentes tamanhos de tela, incluindo:
+  - desktops
+  - tablets
+  - smartphones
+- O sistema possui autenticação segura:
+  - baseado em Access Token e Refresh Token,
+  - Sessões protegidas utilizando cookies HTTP-only,
+  - Rotas protegidas para criação e gerenciamento de estudos
 
 ## Sistema de Refresh Token
+
+![Preview-Screens]()
 
 Para garantir maior segurança e melhor experiência de autenticação, 
 o sistema utiliza um modelo de autenticação baseado em Access Token e Refresh Token.
@@ -94,8 +115,77 @@ Os princípios adotados foram:
 - baixo acoplamento entre módulos
 - organização baseada em funcionalidades
 
+### Fluxo de comunicação
+
+```
+Page → Model (hook) → Service → API
+```
+
+| Camada           | Responsabilidade                                 |
+| ---------------- | ------------------------------------------------ |
+| **Page**         | Inicializa dependências e conecta View com Model |
+| **Model (hook)** | Gerencia estado e lógica da tela                 |
+| **Service**      | Realiza comunicação com a API                    |
+| **API**          | Processa a requisição no servidor                |
+
 A estrutura do projeto foi pensada para facilitar a evolução do sistema conforme novas funcionalidades
 forem adicionadas, tanto quanto a manutenção do código.
+
+## UI separado de Services
+
+Uma das decisões arquiteturais adotadas da qual destaco é a separação da lógica de comunicação com a API da camada de interface.
+
+Foi criada uma camada de services, responsável por centralizar todas as requisições ao servidor, 
+enquanto os componentes da interface permanecem focados apenas na renderização e interação com o usuário.
+
+Service:
+
+```
+// src/service/implementations/GetStudyAllService.ts
+
+export class GetStudyAllService implements IGetStudyAllService {
+  async exec(offset?: number, limit?: number) {
+    const { data } = await AxiosInstance.get("/study", {
+      params: { offset, limit },
+    });
+
+    return {
+      studies: data.studies.data,
+      next: data.studies.next,
+      previous: data.studies.previous,
+      length: data.studies.length,
+    };
+  }
+}
+```
+
+Model:
+
+```
+// src/app/(Studies)/get/getStudies.model.ts
+
+...
+const res = await getAllStudiesService.exec(
+  pageParam.offset,
+  pageParam.limit
+);
+```
+
+Page:
+
+```
+// src/app/(Studies)/get/page.tsx
+
+export const GetStudiesPage = () => {
+  const getStudyAll = new GetStudyAllService();
+
+  const methods = useGetStudiesModel({
+    getAllStudiesService: getStudyAll
+  });
+
+  return <GetStudiesView {...methods} />;
+};
+```
 
 ## Tecnologias Utilizadas
 
