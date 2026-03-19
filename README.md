@@ -31,7 +31,7 @@ Toda sugestão é muito bem-vinda para que eu continue melhorando como profissio
 
 Email: eduardo.silvamachado07@gmail.com
 
-Conecte-se comigo no [LinkedIn](https://www.linkedin.com/in/eduardo-machado-dev/)
+Conecte-se comigo no [LinkedIn](www.linkedin.com/in/eduardo-machado-fullstack)
 
 ## Como posso
 
@@ -94,20 +94,26 @@ Foi adotado um sistema de componentes reutilizáveis utilizando shadcn/ui, garan
 Para garantir maior segurança e melhor experiência de autenticação, 
 o sistema utiliza um modelo de autenticação baseado em Access Token e Refresh Token.
 
-Ao realizar o login, o sistema gera dois tokens **(Access Token e Refresh Token)**.
+- Access Token → curta duração (15 min)
+- Refresh Token → longa duração (3 dias)
+- 
+Os tokens são armazenados utilizando cookies HTTP-only, reduzindo riscos relacionados a ataques como XSS.
+
+A autenticação é baseada em JSON Web Tokens (JWT), cada token é assinado utilizando chaves secretas.
+
+Ao realizar o login, o sistema gera os tokens **(Access Token e Refresh Token)**.
 O _Access Token_ é utilizado para acessar rotas protegidas do sistema, quando ele expira,
 o sistema utiliza o _Refresh Token_ para gerar um novo _Access Token_ automaticamente.
 
 Esse processo garante segurança e renovação automática da sessão do usuário, 
 reduzindo a necessidade de logins repetidos.
 
-Os tokens são armazenados utilizando cookies HTTP-only, 
-reduzindo riscos relacionados a ataques como XSS.
-
 ## Arquitetura
 
 O cliente foi estruturado com foco em organização, escalabilidade e facilidade de manutenção.
 A aplicação segue uma abordagem modular, onde diferentes responsabilidades são separadas em camadas bem definidas.
+
+<img width="1440" height="1132" alt="image" src="https://github.com/user-attachments/assets/28440f67-42df-4f2a-8890-750e2cee88c1" />
 
 Os princípios adotados foram:
 - separação entre interface, lógica e comunicação com API
@@ -140,7 +146,7 @@ enquanto os componentes da interface permanecem focados apenas na renderização
 
 Service:
 
-```
+```ts
 // src/service/implementations/GetStudyAllService.ts
 
 export class GetStudyAllService implements IGetStudyAllService {
@@ -161,7 +167,7 @@ export class GetStudyAllService implements IGetStudyAllService {
 
 Model:
 
-```
+```ts
 // src/app/(Studies)/get/getStudies.model.ts
 
 ...
@@ -173,7 +179,7 @@ const res = await getAllStudiesService.exec(
 
 Page:
 
-```
+```ts
 // src/app/(Studies)/get/page.tsx
 
 export const GetStudiesPage = () => {
